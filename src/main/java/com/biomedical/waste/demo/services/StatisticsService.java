@@ -18,13 +18,19 @@ public class StatisticsService {
     private final WasteRepository wasteRepository;
     private final AlertRepository alertRepository;
 
-    /** Returns the count of waste records grouped by type. */
+    /**
+     * Returns the count of waste records grouped by type.
+     * Useful for dashboard charts and reporting.
+     */
     public Map<WasteType, Long> countByType() {
         return wasteRepository.findAll().stream()
             .collect(Collectors.groupingBy(Waste::getType, Collectors.counting()));
     }
 
-    /** Returns total weight in kg grouped by originating entity. */
+    /**
+     * Returns total weight in kg grouped by originating entity.
+     * Aggregates all waste records using a stream collector.
+     */
     public Map<String, Double> totalWeightByEntity() {
         return wasteRepository.findAll().stream()
             .collect(Collectors.groupingBy(Waste::getOriginEntity, Collectors.summingDouble(Waste::getWeightKg)));
