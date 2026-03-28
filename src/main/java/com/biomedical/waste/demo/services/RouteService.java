@@ -16,7 +16,10 @@ public class RouteService {
     private final RouteRepository routeRepository;
     private final RouteGraph routeGraph = new RouteGraph();
 
-    /** Initializes the in-memory route graph with default biomedical collection points. */
+    /**
+     * Initializes the in-memory route graph with default biomedical collection points.
+     * Runs automatically after the bean is constructed via @PostConstruct.
+     */
     @PostConstruct
     public void initializeGraph() {
         routeGraph.addNode("HospitalSanRafael");
@@ -33,7 +36,10 @@ public class RouteService {
         routeGraph.addRoute("HospitalPediatrico", "DepositoCentral", 6.2, 22);
     }
 
-    /** Calculates the shortest collection route between two points using Dijkstra. */
+    /**
+     * Calculates the shortest collection route between two points using Dijkstra.
+     * Returns the path nodes and total distance/time.
+     */
     public RouteGraph.PathResult getOptimalRoute(String from, String to) {
         return routeGraph.dijkstra(from, to);
     }
