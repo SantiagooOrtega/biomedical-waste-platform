@@ -32,18 +32,28 @@ public class WasteService {
     private final TraceabilityLinkedList<String> globalTraceLog = new TraceabilityLinkedList<>();
     private final WasteTypeBST<Double> weightTree = new WasteTypeBST<>();
 
-    /** Returns all registered waste items. */
+    /**
+     * Returns all registered waste items.
+     * Fetches the complete list from the persistence layer without filtering.
+     */
     public List<Waste> getAll() {
         return wasteRepository.findAll();
     }
 
-    /** Returns a waste by id or throws WasteNotFoundException. */
+    /**
+     * Returns a waste by id or throws WasteNotFoundException.
+     * Validates that the id is not null before querying the repository.
+     */
     public Waste getById(String id) {
         if (id == null) throw new IllegalArgumentException("Waste id cannot be null");
         return wasteRepository.findById(id).orElseThrow(() -> new WasteNotFoundException(id));
     }
 
-    /** Creates a new waste record using WasteBuilder validation and enqueues it for collection. */
+    /**
+     * Creates a new waste record using WasteBuilder validation and enqueues it for collection.
+     * Also inserts the weight into the BST and indexes the record by originating entity.
+     * Triggers an alert automatically if the waste risk level is 4 or higher.
+     */
     public Waste create(Waste waste) {
         if (waste == null) {
             throw new IllegalArgumentException("Waste cannot be null");
@@ -67,7 +77,10 @@ public class WasteService {
         return saved;
     }
 
-    /** Updates an existing waste record by id. */
+    /**
+     * Updates an existing waste record by id.
+     * Only type, weight, origin entity and treatment method are updatable.
+     */
     public Waste update(String id, Waste waste) {
         Waste existing = getById(id);
         existing.setType(waste.getType());
